@@ -1,11 +1,21 @@
+using Org.BouncyCastle.Asn1.Misc;
+
 public class UserAccount
 {
-    public int Id;
-    public string FName;
-    public string LName;
-    public string PersonalNumber;
-    public string Password { get; private set; }
-    public bool IsAdmin { get; private set; } = false;
-    public bool IsLocked { get; private set; } = false;
+    public int Id { get; set; }
+    public string FName { get; set; }
+    public string LName { get; set; }
+    public string PersonalNumber { get; set; }
+    public string Password { get; set; }
+    public bool IsAdmin { get; set; } = false;
+    public bool IsLocked { get; set; } = false;
+
+    public UserAccount(string fname, string lname, string personalnumber, string password)
+    {
+        FName = fname;
+        LName = lname;
+        PersonalNumber = personalnumber;
+        Password = password;
+    }
 
 }
