@@ -35,16 +35,17 @@ public class AuthService : IAuthService
             }
         }
     }
-    // public void Logout(UserAccount userAccount)
-    // {
-    //     IsLoggedIn = false;
-    // }
-    // public (bool Success, string Message) AuthCreateAccount(string fname, string lname, string personalnumber, string password)
-    // {
-    //     if ()
-    //     {
 
-    //     }
-    // }
+    public (bool Success, string Message) AuthCreateAccount(string fname, string lname, string personalnumber, string password)
+    {
+        ActiveUser = _UserRepository.CreateAccount()
+    }
 
+
+
+
+    public void Logout(UserAccount? userAccount)
+    {
+        ActiveUser = null;
+    }
 }

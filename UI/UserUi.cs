@@ -1,9 +1,10 @@
+using Services;
 using Ui;
 
 public class UserUi : BaseUi, IUserInterface
 {
-    private readonly AuthService _AuthService;
-    public UserUi(AuthService authService)
+    private readonly IAuthService _AuthService;
+    public UserUi(IAuthService authService)
     {
         _AuthService = authService;
     }

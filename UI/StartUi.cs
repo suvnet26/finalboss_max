@@ -40,23 +40,25 @@ public class StartUi : BaseUi, IUserInterface
                 System.Console.WriteLine(LoginResult.Message);
                 if (LoginResult.Success)
                 {
-                    if (LoginResult.IsAdmin)
-                    {
-                        AdminUi adminUi = new(_AuthService.ActiveUser);
-                        adminUi.run();
-                        break;
-                    }
-                    else if (!LoginResult.IsAdmin)
-                    {
-                        UserUi userUi = new(_);
-                        userUi.run();
-                        break;
-                    }
+                    OpenUi(LoginResult.IsAdmin).run();
+                    break;
                 }
                 break;
             default: System.Console.WriteLine("ogiltigt alternativ"); break;
 
         }
+    }
+
+    private IUserInterface OpenUi(bool IsAdmin)
+    {
+
+        if (IsAdmin)
+        {
+            AdminUi adminUi = new(_AuthService);
+            return adminUi;
+        }
+        UserUi userUi = new(_AuthService);
+        return userUi;
     }
 
 }

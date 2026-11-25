@@ -1,15 +1,16 @@
+using Services;
 using Ui;
 
-public class AdminUi : IUserInterface
+public class AdminUi : BaseUi, IUserInterface
 {
     public void run()
     {
         AdminMenu();
     }
-    private readonly UserAccount _ActiveUser;
-    public AdminUi(UserAccount activeuser)
+    private readonly IAuthService _AuthService;
+    public AdminUi(IAuthService authService)
     {
-        _ActiveUser = activeuser;
+        _AuthService = authService;
     }
     public void AdminMenu()
     {
