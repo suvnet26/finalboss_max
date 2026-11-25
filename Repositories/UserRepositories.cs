@@ -26,7 +26,11 @@ public class UserRepository
                                 WHERE UserAccount.Id = LAST_INSERT_ID()
                                 """;
         return connection.QueryFirstOrDefault<UserAccount>(CreateUserAccountSql, new { fname, lname, personalnumber, password });
-
-
     }
+
+    public
+
+
+
+
 }

@@ -2,7 +2,7 @@ using System.Data;
 using System.Dynamic;
 using Ui;
 
-public class StartUi : IUserInterface
+public class StartUi : BaseUi, IUserInterface
 {
     public void run()
     {
@@ -27,22 +27,9 @@ public class StartUi : IUserInterface
                 ActiveUser = _userRepository.CreateAccount(InputValidator("skriv ditt förnamn"), InputValidator("skriv ditt efternamn"), InputValidator("skriv ditt personnummer xxxx-xx-xx"), InputValidator("skriv ditt lösenord"));
                 break;
             case "2":
-
+                ActiveUser = _userRepository.
                 break;
         }
     }
-    static string InputValidator(string prompt)
-    {
 
-        while (true)
-        {
-            System.Console.WriteLine(prompt);
-            string? input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                System.Console.WriteLine("det kan inte vara tomt, försök igen");
-            }
-            else return input;
-        }
-    }
 }
