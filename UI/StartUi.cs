@@ -1,34 +1,61 @@
 using System.Data;
 using System.Dynamic;
+using System.Runtime.InteropServices;
+using Services;
 using Ui;
 
 public class StartUi : BaseUi, IUserInterface
 {
+    public StartUi(IAuthService authService)
+    {
+        _AuthService = authService;
+    }
     public void run()
     {
         Menu();
     }
     public void Menu()
     {
-
-        System.Console.WriteLine("Vill du logga in");
-        System.Console.WriteLine("Vill du skapa ett konto?");
-        StartChoice(InputValidator("1: Skapa konto / 2: Logga in"));
+        while (_AuthService.ActiveUser == null)
+        {
+            System.Console.WriteLine("Vill du skapa ett konto?");
+            System.Console.WriteLine("Vill du logga in?");
+            StartChoice(InputValidator("1: Skapa konto / 2: Logga in"));
+        }
     }
-    public UserAccount? ActiveUser { get; private set; }
-    private readonly UserRepository _userRepository = new();
+
+    private readonly IAuthService _AuthService;
 
     public void StartChoice(string input)
     {
         switch (input)
         {
             case "1":
+                var CreateAccountResult = _AuthService.AuthCreateAccount(InputValidator("skriv ditt förnamn"), InputValidator("skriv ditt efternamn"),
+                 InputValidator("skriv ditt personnummer xxxx-xx-xx"), InputValidator("skriv ditt lösenord"));
 
-                ActiveUser = _userRepository.CreateAccount(InputValidator("skriv ditt förnamn"), InputValidator("skriv ditt efternamn"), InputValidator("skriv ditt personnummer xxxx-xx-xx"), InputValidator("skriv ditt lösenord"));
                 break;
             case "2":
-                ActiveUser = _userRepository.
+                var LoginResult = _AuthService.AuthLogin(InputValidator("skriv in ditt personnummer"), InputValidator("skriv in dit lösenord"));
+                System.Console.WriteLine(LoginResult.Message);
+                if (LoginResult.Success)
+                {
+                    if (LoginResult.IsAdmin)
+                    {
+                        AdminUi adminUi = new(_AuthService.ActiveUser);
+                        adminUi.run();
+                        break;
+                    }
+                    else if (!LoginResult.IsAdmin)
+                    {
+                        UserUi userUi = new(_);
+                        userUi.run();
+                        break;
+                    }
+                }
                 break;
+            default: System.Console.WriteLine("ogiltigt alternativ"); break;
+
         }
     }
 

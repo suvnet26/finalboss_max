@@ -1,6 +1,7 @@
 using MySql.Data.MySqlClient;
 using Dapper;
 using System.Data;
+using Microsoft.VisualBasic;
 
 public class UserRepository
 {
@@ -15,7 +16,7 @@ public class UserRepository
         Password={connectionItems[4]};
     """;
 
-    public UserAccount CreateAccount(string fname, string lname, string personalnumber, string password)
+    public UserAccount? CreateAccount(string fname, string lname, string personalnumber, string password)
     {
         using IDbConnection connection = new MySqlConnection(connectionString);
 
@@ -28,7 +29,16 @@ public class UserRepository
         return connection.QueryFirstOrDefault<UserAccount>(CreateUserAccountSql, new { fname, lname, personalnumber, password });
     }
 
-    public
+    public UserAccount? Login(string personalnumber, string password)
+    {
+        using IDbConnection connection = new MySqlConnection(connectionString);
+        string LoginSql = @"
+                            SELECT UserAccount.Id, UserAccount.FName, UserAccount.LName, UserAccount.PersonalNumber, UserAccount.Password, UserAccount.IsAdmin, UserAccount.IsLocked
+                            FROM UserAccount
+                            WHERE UserAccount.PersonalNumber = @personalnumber AND UserAccount.Password = @password
+                            ";
+        return connection.QueryFirstOrDefault<UserAccount>(LoginSql, new { personalnumber, password });
+    }
 
 
 
