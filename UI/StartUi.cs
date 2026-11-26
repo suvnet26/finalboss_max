@@ -36,15 +36,15 @@ public class StartUi : BaseUi, IUserInterface
                 System.Console.WriteLine(CreateAccountResult.Message);
                 if (CreateAccountResult.Success)
                 {
-                    OpenUi(_AuthService.ActiveUser.IsAdmin).run();
+                    OpenUi(_AuthService.ActiveUser).run();
                 }
                 break;
             case "2":
-                var LoginResult = _AuthService.AuthLogin(InputValidator("skriv in ditt personnummer"), InputValidator("skriv in dit lösenord"));
+                var LoginResult = _AuthService.AuthLogin(InputValidator("skriv in ditt personnummer xxxx-xx-xx-xxxx"), InputValidator("skriv in dit lösenord"));
                 System.Console.WriteLine(LoginResult.Message);
                 if (LoginResult.Success)
                 {
-                    OpenUi(LoginResult.IsAdmin).run();
+                    OpenUi(_AuthService.ActiveUser).run();
                 }
                 break;
             default: System.Console.WriteLine("ogiltigt alternativ"); break;
@@ -52,10 +52,10 @@ public class StartUi : BaseUi, IUserInterface
         }
     }
 
-    private IUserInterface OpenUi(bool IsAdmin)
+    private IUserInterface OpenUi(IUserAccounts? userAccounts)
     {
 
-        if (IsAdmin)
+        if (userAccounts is AdminAccount)
         {
             AdminUi adminUi = new(_AuthService);
             return adminUi;

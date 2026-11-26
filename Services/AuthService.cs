@@ -1,5 +1,7 @@
 using Services;
 using Repositories;
+using BCrypt.Net;
+
 public class AuthService : IAuthService
 {
     private readonly UserRepository _UserRepository;
@@ -8,37 +10,37 @@ public class AuthService : IAuthService
     {
         _UserRepository = userRepository;
     }
-    public UserAccount? ActiveUser { get; private set; }
+    public IUserAccounts? ActiveUser { get; private set; }
     public bool IsLoggedIn => ActiveUser != null;
 
-    public (bool Success, string Message, bool IsAdmin) AuthLogin(string personalnumber, string password)
+    public bool IsAdmin => ActiveUser is AdminAccount;
+    public (bool Success, string Message) AuthLogin(string personalnumber, string plainPassword)
     {
-        ActiveUser = _UserRepository.Login(personalnumber, password);
-        if (ActiveUser == null)
+        IUserAccounts? user = _UserRepository.GetUserByPersonalNumber(personalnumber);
+        if (user == null)
         {
-            return (false, "det fanns ingen med det lösenordet eller personnummret", false);
+            user = _UserRepository.GetAdminByPersonalNumber(personalnumber);
         }
-        else if (ActiveUser.IsLocked == true)
+        if (user == null || !BCrypt.Net.BCrypt.Verify(plainPassword, user.Password))
         {
-            ActiveUser = null;
-            return (false, "ditt konto är låst", false);
+            return (false, "det fanns ingen med det lösenordet eller personnummret");
+        }
+        else if (user is UserAccount userAccount && userAccount.IsLocked == true)
+        {
+            user = null;
+            return (false, "ditt konto är låst");
         }
         else
         {
-            if (ActiveUser.IsAdmin == true)
-            {
-                return (true, $"välkommen admin {ActiveUser.FName}", true);
-            }
-            else
-            {
-                return (true, $"välkommen {ActiveUser.FName}", false);
-            }
+            ActiveUser = user;
+            return (true, $"välkommen {ActiveUser.FName}");
         }
     }
 
-    public (bool Success, string Message) AuthCreateAccount(string fname, string lname, string personalnumber, string password)
+    public (bool Success, string Message) AuthCreateAccount(string fname, string lname, string personalnumber, string plainPassword)
     {
-        ActiveUser = _UserRepository.CreateAccount(fname, lname, personalnumber, password);
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+        ActiveUser = _UserRepository.CreateAccount(fname, lname, personalnumber, passwordHash);
         if (ActiveUser != null)
         {
             return (true, "ditt konto skapades");

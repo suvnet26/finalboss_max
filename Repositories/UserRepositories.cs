@@ -18,28 +18,50 @@ public class UserRepository
         Password={connectionItems[4]};
     """;
 
-    public UserAccount? CreateAccount(string fname, string lname, string personalnumber, string password)
+    public UserAccount? CreateAccount(string fname, string lname, string personalnumber, string hashedPassword)
     {
         using IDbConnection connection = new MySqlConnection(connectionString);
 
         string CreateUserAccountSql = """
-                                INSERT INTO UserAccount (FName, LName, PersonalNumber, Password)
-                                Values(@fname, @lname, @personalnumber, @password);
-                                SELECT * FROM UserAccount
-                                WHERE UserAccount.Id = LAST_INSERT_ID()
-                                """;
-        return connection.QueryFirstOrDefault<UserAccount>(CreateUserAccountSql, new { fname, lname, personalnumber, password });
+                            INSERT INTO UserAccount (FName, LName, PersonalNumber, Password)
+                            VALUES (@fname, @lname, @personalnumber, @password);
+                            SELECT * FROM UserAccount
+                            WHERE UserAccount.Id = LAST_INSERT_ID();
+                            """;
+
+        return connection.QueryFirstOrDefault<UserAccount>(CreateUserAccountSql, new
+        {
+            fname,
+            lname,
+            personalnumber,
+            password = hashedPassword
+        });
     }
 
-    public UserAccount? Login(string personalnumber, string password)
+    public UserAccount? GetUserByPersonalNumber(string personalnumber)
     {
         using IDbConnection connection = new MySqlConnection(connectionString);
-        string LoginSql = @"
-                            SELECT UserAccount.Id, UserAccount.FName, UserAccount.LName, UserAccount.PersonalNumber, UserAccount.Password, UserAccount.IsAdmin, UserAccount.IsLocked
-                            FROM UserAccount
-                            WHERE UserAccount.PersonalNumber = @personalnumber AND UserAccount.Password = @password
-                            ";
-        return connection.QueryFirstOrDefault<UserAccount>(LoginSql, new { personalnumber, password });
+
+        string sql = """
+                 SELECT Id, FName, LName, PersonalNumber, Password, IsLocked
+                 FROM UserAccount
+                 WHERE PersonalNumber = @personalnumber;
+                 """;
+
+        return connection.QueryFirstOrDefault<UserAccount>(sql, new { personalnumber });
+    }
+
+    public AdminAccount? GetAdminByPersonalNumber(string personalnumber)
+    {
+        using IDbConnection connection = new MySqlConnection(connectionString);
+
+        string sql = """
+                 SELECT Id, Name, PersonalNumber, Password
+                 FROM AdminAccount
+                 WHERE PersonalNumber = @personalnumber;
+                 """;
+
+        return connection.QueryFirstOrDefault<AdminAccount>(sql, new { personalnumber });
     }
 
 
