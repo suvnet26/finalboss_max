@@ -32,7 +32,7 @@ public class StartUi : BaseUi, IUserInterface
         {
             case "1":
                 var CreateAccountResult = _AuthService.AuthCreateAccount(InputValidator("skriv ditt förnamn"), InputValidator("skriv ditt efternamn"),
-                InputValidator("skriv ditt personnummer xxxx-xx-xx"), InputValidator("skriv ditt lösenord"));
+                InputValidator("skriv ditt personnummer xxxx-xx-xx-xxxx"), InputValidator("skriv ditt lösenord"));
                 System.Console.WriteLine(CreateAccountResult.Message);
                 if (CreateAccountResult.Success)
                 {

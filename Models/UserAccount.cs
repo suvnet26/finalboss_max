@@ -17,5 +17,9 @@ public class UserAccount
         PersonalNumber = personalnumber;
         Password = password;
     }
+    public UserAccount()
+    {
+
+    }
 
 }
