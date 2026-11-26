@@ -11,6 +11,8 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="Dapper" Version="2.1.100" />
     <PackageReference Include="MySql.Data" Version="26.10.0" />
+    <Compile Remove="Internetbanken.tests/**/*.cs" />
+    <None Remove="Internetbanken.tests/**/*" />
   </ItemGroup>
 
 </Project>
