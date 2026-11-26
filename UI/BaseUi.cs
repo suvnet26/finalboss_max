@@ -18,8 +18,9 @@ public class BaseUi
     }
 
     //.  2003-09-10-0477
-    public (bool succes, string message, string? personnummer) Validate_PersonalNumber_input(string? input)
+    protected static (bool succes, string message, string? personnummer) Validate_PersonalNumber_input(string promt)
     {
+        string? input = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(input) || input.Length != 15)
         {
             return (false, "Det måste vara 15 tecken", null);
@@ -41,5 +42,20 @@ public class BaseUi
         return (true, "lyckades", input);
     }
 
+    protected string ReadValidPersonalNumber(string prompt = "Skriv in ditt personnummer (xxxx-xx-xx-xxxx):")
+    {
+        while (true)
+        {
+            string plainInput = InputValidator(prompt);
+            var validation = Validate_PersonalNumber_input(plainInput);
+
+            if (validation.succes && validation.personnummer is not null)
+            {
+                return validation.personnummer;
+            }
+
+            Console.WriteLine(validation.message);
+        }
+    }
 
 }

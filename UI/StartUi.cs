@@ -31,8 +31,11 @@ public class StartUi : BaseUi, IUserInterface
         switch (input)
         {
             case "1":
-                var CreateAccountResult = _AuthService.AuthCreateAccount(InputValidator("skriv ditt förnamn"), InputValidator("skriv ditt efternamn"),
-                InputValidator("skriv ditt personnummer xxxx-xx-xx-xxxx"), InputValidator("skriv ditt lösenord"));
+                var CreateAccountResult = _AuthService.AuthCreateAccount(
+                    InputValidator("skriv ditt förnamn"),
+                    InputValidator("skriv ditt efternamn"),
+                    ReadValidPersonalNumber("skriv ditt personnummer xxxx-xx-xx-xxxx"),
+                    InputValidator("skriv ditt lösenord"));
                 System.Console.WriteLine(CreateAccountResult.Message);
                 if (CreateAccountResult.Success)
                 {
@@ -40,7 +43,9 @@ public class StartUi : BaseUi, IUserInterface
                 }
                 break;
             case "2":
-                var LoginResult = _AuthService.AuthLogin(InputValidator("skriv in ditt personnummer xxxx-xx-xx-xxxx"), InputValidator("skriv in dit lösenord"));
+                string personnummer = ReadValidPersonalNumber();
+                string password = InputValidator("skriv in ditt lösenord");
+                var LoginResult = _AuthService.AuthLogin(personnummer, password);
                 System.Console.WriteLine(LoginResult.Message);
                 if (LoginResult.Success)
                 {
