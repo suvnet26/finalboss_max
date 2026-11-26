@@ -14,4 +14,5 @@ public class BaseUi
             else return input;
         }
     }
+
 }
