@@ -18,9 +18,9 @@ public class BaseUi
     }
 
     //.  2003-09-10-0477
-    protected static (bool succes, string message, string? personnummer) Validate_PersonalNumber_input(string promt)
+    protected static (bool succes, string message, string? personnummer) Validate_PersonalNumber_input(string Inputtext)
     {
-        string? input = Console.ReadLine();
+        string? input = Inputtext;
         if (string.IsNullOrWhiteSpace(input) || input.Length != 15)
         {
             return (false, "Det måste vara 15 tecken", null);
@@ -56,6 +56,23 @@ public class BaseUi
 
             Console.WriteLine(validation.message);
         }
+    }
+
+    protected string StringNumberNotLetterNotNullOrWhiteSpace(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return "det kan inte vara tomt";
+        }
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (!char.IsLetter(input[i]))
+            {
+                return "du måste väla en siffra";
+            }
+        }
+        return input;
+
     }
 
 }
