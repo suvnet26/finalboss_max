@@ -32,8 +32,12 @@ public class StartUi : BaseUi, IUserInterface
         {
             case "1":
                 var CreateAccountResult = _AuthService.AuthCreateAccount(InputValidator("skriv ditt förnamn"), InputValidator("skriv ditt efternamn"),
-                 InputValidator("skriv ditt personnummer xxxx-xx-xx"), InputValidator("skriv ditt lösenord"));
-
+                InputValidator("skriv ditt personnummer xxxx-xx-xx"), InputValidator("skriv ditt lösenord"));
+                System.Console.WriteLine(CreateAccountResult.Message);
+                if (CreateAccountResult.Success)
+                {
+                    OpenUi(_AuthService.ActiveUser.IsAdmin).run();
+                }
                 break;
             case "2":
                 var LoginResult = _AuthService.AuthLogin(InputValidator("skriv in ditt personnummer"), InputValidator("skriv in dit lösenord"));
@@ -41,7 +45,6 @@ public class StartUi : BaseUi, IUserInterface
                 if (LoginResult.Success)
                 {
                     OpenUi(LoginResult.IsAdmin).run();
-                    break;
                 }
                 break;
             default: System.Console.WriteLine("ogiltigt alternativ"); break;

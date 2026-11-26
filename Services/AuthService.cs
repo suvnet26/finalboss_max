@@ -1,5 +1,5 @@
 using Services;
-
+using Repositories;
 public class AuthService : IAuthService
 {
     private readonly UserRepository _UserRepository;
@@ -38,13 +38,15 @@ public class AuthService : IAuthService
 
     public (bool Success, string Message) AuthCreateAccount(string fname, string lname, string personalnumber, string password)
     {
-        ActiveUser = _UserRepository.CreateAccount()
+        ActiveUser = _UserRepository.CreateAccount(fname, lname, personalnumber, password);
+        if (ActiveUser != null)
+        {
+            return (true, "ditt konto skapades");
+        }
+        return (false, "dit konto skapades inte");
     }
 
-
-
-
-    public void Logout(UserAccount? userAccount)
+    public void Logout()
     {
         ActiveUser = null;
     }

@@ -1,3 +1,5 @@
+namespace Repositories;
+
 using MySql.Data.MySqlClient;
 using Dapper;
 using System.Data;
