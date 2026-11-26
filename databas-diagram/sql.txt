@@ -1,0 +1,58 @@
+-- MariaDB
+
+DROP TABLE IF EXISTS UserToBankAccount;
+DROP TABLE IF EXISTS Transaction;
+DROP TABLE IF EXISTS BankAccount;
+DROP TABLE IF EXISTS UserAccount;
+DROP TABLE IF EXISTS AccountType;
+
+CREATE TABLE AccountType (
+  Id       INT NOT NULL AUTO_INCREMENT,
+  Name     VARCHAR(64) NOT NULL,
+  interest DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (Id)
+);
+
+CREATE TABLE UserAccount (
+  Id       INT NOT NULL AUTO_INCREMENT,
+  FName    VARCHAR(64) NOT NULL,
+  LName    VARCHAR(64) NOT NULL,
+  Password VARCHAR(256) NOT NULL,
+  IsAdmin  BOOL NOT NULL DEFAULT FALSE,
+  IsLocked BOOL NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (Id)
+);
+
+CREATE TABLE BankAccount (
+  Id            INT NOT NULL AUTO_INCREMENT,
+  Name          VARCHAR(64) NOT NULL,
+  AccountNumber VARCHAR(32) NOT NULL UNIQUE,
+  Balance       DECIMAL(10,2) NOT NULL,
+  LockedByAdmin BOOL NOT NULL DEFAULT FALSE,
+  AccountTypeId INT NOT NULL,
+  PRIMARY KEY (Id),
+  CONSTRAINT FK_BankAccount_AccountTypeId FOREIGN KEY (AccountTypeId) REFERENCES AccountType(Id)
+);
+
+CREATE TABLE Transaction (
+  Id                INT NOT NULL AUTO_INCREMENT,
+  FromBankAccountId INT NOT NULL,
+  ToBankAccountId   INT NOT NULL,
+  TransactionDate   DATETIME NOT NULL,
+  Message           VARCHAR(256) NOT NULL,
+  Amount            DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (Id),
+  CONSTRAINT FK_Transaction_FromBankAccountId FOREIGN KEY (FromBankAccountId) REFERENCES BankAccount(Id),
+  CONSTRAINT FK_Transaction_ToBankAccountId FOREIGN KEY (ToBankAccountId) REFERENCES BankAccount(Id)
+);
+
+CREATE TABLE UserToBankAccount (
+  Id            INT NOT NULL AUTO_INCREMENT,
+  UserAccountId INT NOT NULL,
+  BankAccountId INT NOT NULL,
+  HeadOwner     BOOL NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (Id),
+  UNIQUE (UserAccountId, BankAccountId),
+  CONSTRAINT FK_UserToBankAccount_UserAccountId FOREIGN KEY (UserAccountId) REFERENCES UserAccount(Id) ON DELETE CASCADE,
+  CONSTRAINT FK_UserToBankAccount_BankAccountId FOREIGN KEY (BankAccountId) REFERENCES BankAccount(Id) ON DELETE CASCADE
+);
