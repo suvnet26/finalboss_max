@@ -7,20 +7,16 @@ using Microsoft.VisualBasic;
 
 public class UserRepository
 {
-    static string preConnectionString = File.ReadAllText("tokens.txt");
-    static string[] connectionItems = preConnectionString.Split(';');
+    private readonly string _connectionString;
+    public UserRepository(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
 
-    static string connectionString = $"""
-        Server={connectionItems[0]};
-        Port={connectionItems[1]};
-        Database={connectionItems[2]};
-        User={connectionItems[3]};
-        Password={connectionItems[4]};
-    """;
 
     public UserAccount? CreateAccount(string fname, string lname, string personalnumber, string hashedPassword)
     {
-        using IDbConnection connection = new MySqlConnection(connectionString);
+        using IDbConnection connection = new MySqlConnection(_connectionString);
 
         string CreateUserAccountSql = """
                             INSERT INTO UserAccount (FName, LName, PersonalNumber, Password)
@@ -40,7 +36,7 @@ public class UserRepository
 
     public UserAccount? GetUserByPersonalNumber(string personalnumber)
     {
-        using IDbConnection connection = new MySqlConnection(connectionString);
+        using IDbConnection connection = new MySqlConnection(_connectionString);
 
         string sql = """
                  SELECT Id, FName, LName, PersonalNumber, Password, IsLocked
@@ -53,7 +49,7 @@ public class UserRepository
 
     public AdminAccount? GetAdminByPersonalNumber(string personalnumber)
     {
-        using IDbConnection connection = new MySqlConnection(connectionString);
+        using IDbConnection connection = new MySqlConnection(_connectionString);
 
         string sql = """
                  SELECT Id, Name, PersonalNumber, Password

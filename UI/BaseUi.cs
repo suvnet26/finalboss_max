@@ -58,21 +58,21 @@ public class BaseUi
         }
     }
 
-    protected string StringNumberNotLetterNotNullOrWhiteSpace(string input)
+    protected static (bool IsDigit, string message, string? output) ReadNumericString(string input)
     {
+        input = input.Trim();
         if (string.IsNullOrWhiteSpace(input))
         {
-            return "det kan inte vara tomt";
+            return (false, "det kan inte vara tomt", null);
         }
         for (int i = 0; i < input.Length; i++)
         {
-            if (!char.IsLetter(input[i]))
+            if (!char.IsDigit(input[i]))
             {
-                return "du måste väla en siffra";
+                return (false, "du måste välja en siffra", null);
             }
         }
-        return input;
-
+        return (true, "", input);
     }
 
 }
